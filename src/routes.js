@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const scopeDecoder = require('./scopeDecoder')
 
 const cookieOpts = ({httpOnly, reset = false, domain, maxAge = false}) => ({
   secure: true,
@@ -15,12 +16,16 @@ module.exports = ({
     tokenSecret,
     profileCookieName,
     cookieDomain,
+    env,
     maxAge = false
   }) => ({
     onAuthenticationRequest: (req, res, next) => {
       const type = req.path.split('/')[1]
       const strategy = strategies.find(strategy => strategy.type === type)
       const opts = {}
+      if (env && env.LW_DYNAMIC_SCOPE && req.query && req.query.scope) {
+        opts.scope = scopeDecoder(req.query.scope)
+      }
       req.session.success = req.query.success
       req.session.failure = req.query.failure
       if (strategy.preHook) {
@@ -31,13 +36,13 @@ module.exports = ({
     onAuthenticationCallback: (req, res, next) => {
       const type = req.path.split('/')[1]
       passport.authenticate(type, (error, user) => {
-        if (error) {
+        if (error || !user) {
           res.cookie(tokenCookieName, '', cookieOpts({
             reset: true,
             httpOnly: true,
             domain: cookieDomain
           }))
-          res.cookie(profileCookieName, JSON.stringify({error}), cookieOpts({
+          res.cookie(profileCookieName, JSON.stringify({error: error || 'No user was returned'}), cookieOpts({
             httpOnly: false,
             domain: cookieDomain,
             maxAge

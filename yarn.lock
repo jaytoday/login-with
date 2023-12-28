@@ -1847,13 +1847,6 @@ parseurl@~1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.1.tgz#c8ab8c9223ba34888aa64a297b28853bec18da56"
 
-passport-beam@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/passport-beam/-/passport-beam-1.0.4.tgz#ea933e9aae97333dda5c8846b86c4ba241e0faf4"
-  dependencies:
-    passport-oauth "~1.x.x"
-    pkginfo "0.2.x"
-
 passport-facebook@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/passport-facebook/-/passport-facebook-2.1.1.tgz#c39d0b52ae4d59163245a4e21a7b9b6321303311"
@@ -1872,6 +1865,26 @@ passport-google-oauth20@^1.0.0:
   dependencies:
     passport-oauth2 "1.x.x"
 
+passport-instagram@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-instagram/-/passport-instagram-1.0.0.tgz#eaa2b42d11473bcfda5190f26234cf485f645656"
+  dependencies:
+    passport-oauth2 "1.x.x"
+
+passport-linkedin-oauth2@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/passport-linkedin-oauth2/-/passport-linkedin-oauth2-1.5.0.tgz#06640b36a6f68299fedb8a6a3acfef4dd04d23b9"
+  dependencies:
+    passport-oauth2 "1.x.x"
+    underscore "^1.7.0"
+
+passport-mixer@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/passport-mixer/-/passport-mixer-1.0.1.tgz#c5a4dc43577e634c2cd46d3ab3cc70608d2b63ba"
+  dependencies:
+    passport-oauth "~1.x.x"
+    pkginfo "0.2.x"
+
 passport-oauth1@1.x.x:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/passport-oauth1/-/passport-oauth1-1.1.0.tgz#a7de988a211f9cf4687377130ea74df32730c918"
@@ -1888,6 +1901,14 @@ passport-oauth2@1.x.x:
     passport-strategy "1.x.x"
     uid2 "0.0.x"
     utils-merge "1.x.x"
+
+passport-oauth@0.1.x:
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/passport-oauth/-/passport-oauth-0.1.15.tgz#fb74e0afe84614bfa256c5fc716cc56bbfc8cec0"
+  dependencies:
+    oauth "0.9.x"
+    passport "~0.1.1"
+    pkginfo "0.2.x"
 
 passport-oauth@1.x, passport-oauth@~1.x.x:
   version "1.0.0"
@@ -1907,6 +1928,13 @@ passport-strategy@1.x.x, passport-strategy@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/passport-strategy/-/passport-strategy-1.0.0.tgz#b5539aa8fc225a3d1ad179476ddf236b440f52e4"
 
+passport-strava@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/passport-strava/-/passport-strava-0.2.0.tgz#d6eeb65b4c68b5c1fb3a3f4c8539504ae5eb8a51"
+  dependencies:
+    passport-oauth "0.1.x"
+    pkginfo "0.2.x"
+
 passport-twitter@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/passport-twitter/-/passport-twitter-1.0.4.tgz#01a799e1f760bf2de49f2ba5fba32282f18932d7"
@@ -1920,6 +1948,13 @@ passport@^0.3.2:
   dependencies:
     passport-strategy "1.x.x"
     pause "0.0.1"
+
+passport@~0.1.1:
+  version "0.1.18"
+  resolved "https://registry.yarnpkg.com/passport/-/passport-0.1.18.tgz#c8264479dcb6414cadbb66752d12b37e0b6525a1"
+  dependencies:
+    pause "0.0.1"
+    pkginfo "0.2.x"
 
 path-exists@^2.0.0:
   version "2.1.0"
@@ -2532,6 +2567,10 @@ uid-safe@~2.1.3:
 uid2@0.0.x:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/uid2/-/uid2-0.0.3.tgz#483126e11774df2f71b8b639dcd799c376162b82"
+
+underscore@^1.7.0:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
 
 uniq@^1.0.1:
   version "1.0.1"

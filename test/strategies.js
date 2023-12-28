@@ -6,7 +6,11 @@ const test = require('../src/strategies/test')
 const reddit = require('../src/strategies/reddit')
 const twitter = require('../src/strategies/twitter')
 const facebook = require('../src/strategies/facebook')
+const instagram = require('../src/strategies/instagram')
 const mixer = require('../src/strategies/mixer')
+const linkedin = require('../src/strategies/linkedin')
+const spotify = require('../src/strategies/spotify')
+const strava = require('../src/strategies/strava')
 const assert = require('assert')
 
 describe('the strategies module', () => {
@@ -154,6 +158,103 @@ describe('the strategies module', () => {
     })
   })
 
+  describe('linkedin', () => {
+    let strategies
+    before(() => {
+      const env = {}
+      env.LW_LINKEDIN_CLIENTID = 123
+      env.LW_LINKEDIN_CLIENTSECRET = 432
+      strategies = load(env, rootUrl)
+    })
+
+    it('gets loaded', () => {
+      assert.equal(strategies.length, 1)
+      assert.equal(strategies[0].type, 'linkedin')
+    })
+
+    it('config is correct', () => {
+      assert.deepEqual(strategies[0].config, {
+        clientID: 123,
+        clientSecret: 432,
+        callbackURL: 'https://foo.bar/linkedin/callback',
+        state: true
+      })
+    })
+
+    it('toUser (with family and given name)', done => {
+      const linkedinInfo = {
+        displayName: 'pop',
+        photos: [{
+          value: 'bar'
+        }],
+        name: {
+          familyName: 'doe',
+          givenName: 'john'
+        }
+      }
+      linkedin.toUser(123, 345, linkedinInfo, (error, user) => {
+        assert(!error)
+        assert.equal(user.accessToken, 123)
+        assert.equal(user.refreshToken, 345)
+        assert.deepEqual(user.profile, {
+          username: 'pop',
+          name: 'john doe',
+          photo: 'bar',
+          provider: 'linkedin'
+        })
+        done()
+      })
+    })
+
+    it('toUser (with given name)', done => {
+      const linkedinInfo = {
+        displayName: 'pop',
+        photos: [{
+          value: 'bar'
+        }],
+        name: {
+          givenName: 'john'
+        }
+      }
+      linkedin.toUser(123, 345, linkedinInfo, (error, user) => {
+        assert(!error)
+        assert.equal(user.accessToken, 123)
+        assert.equal(user.refreshToken, 345)
+        assert.deepEqual(user.profile, {
+          username: 'pop',
+          name: 'john',
+          photo: 'bar',
+          provider: 'linkedin'
+        })
+        done()
+      })
+    })
+
+    it('toUser (with family name)', done => {
+      const linkedinInfo = {
+        displayName: 'pop',
+        photos: [{
+          value: 'bar'
+        }],
+        name: {
+          familyName: 'doe'
+        }
+      }
+      linkedin.toUser(123, 345, linkedinInfo, (error, user) => {
+        assert(!error)
+        assert.equal(user.accessToken, 123)
+        assert.equal(user.refreshToken, 345)
+        assert.deepEqual(user.profile, {
+          username: 'pop',
+          name: 'doe',
+          photo: 'bar',
+          provider: 'linkedin'
+        })
+        done()
+      })
+    })
+  })
+
   describe('google', () => {
     let strategies
     before(() => {
@@ -184,6 +285,7 @@ describe('the strategies module', () => {
 
     it('toUser', done => {
       const googleInfo = {
+        id: '1234567890',
         displayName: 'Foo Bar',
         photos: [{
           value: 'asd'
@@ -194,6 +296,7 @@ describe('the strategies module', () => {
         assert.equal(user.accessToken, 123)
         assert.equal(user.refreshToken, 345)
         assert.deepEqual(user.profile, {
+          id: '1234567890',
           username: 'Foo Bar',
           name: 'Foo Bar',
           photo: 'asd',
@@ -242,7 +345,7 @@ describe('the strategies module', () => {
       it('ctor sets name to "test"', () => {
         const verify = 123
         const callbackURL = 'foo'
-        const ts = new test.Ctor({callbackURL}, verify)
+        const ts = new test.Ctor({ callbackURL }, verify)
         assert.equal(ts.name, 'test')
         assert.equal(ts._verify, verify)
       })
@@ -250,7 +353,7 @@ describe('the strategies module', () => {
       it('.authenticate once calls verifys this.redirect', done => {
         const callbackURL = 'foo'
         const verify = 123
-        const ts = new test.Ctor({callbackURL}, verify)
+        const ts = new test.Ctor({ callbackURL }, verify)
         const req = {
           session: {}
         }
@@ -266,11 +369,11 @@ describe('the strategies module', () => {
         const verify = (profile, f) => {
           f(null, profile)
         }
-        const ts = new test.Ctor({callbackURL}, verify)
+        const ts = new test.Ctor({ callbackURL }, verify)
         const req = {
           session: {}
         }
-        ts.redirect = () => {}
+        ts.redirect = () => { }
         ts.success = user => {
           assert.deepEqual(user, {
             username: 'foo',
@@ -362,7 +465,7 @@ describe('the strategies module', () => {
         displayName: 'Foo Bar',
         username: 'pop',
         photos: [
-          {value: 'asd'}
+          { value: 'asd' }
         ]
       }
       twitter.toUser(123, 345, twitterInfo, (error, user) => {
@@ -380,12 +483,56 @@ describe('the strategies module', () => {
     })
   })
 
-  describe('mixer', () => {
+  describe('instagram', () => {
     let strategies
     before(() => {
       const env = {}
-      env.LW_MIXER_CLIENTID = 123
-      env.LW_MIXER_CLIENTSECRET = 432
+      env.LW_INSTAGRAM_CLIENTID = 123
+      env.LW_INSTAGRAM_CLIENTSECRET = 432
+      strategies = load(env, rootUrl)
+    })
+
+    it('gets loaded', () => {
+      assert.equal(strategies.length, 1)
+      assert.equal(strategies[0].type, 'instagram')
+    })
+
+    it('config is correct', () => {
+      assert.deepEqual(strategies[0].config, {
+        clientID: 123,
+        clientSecret: 432,
+        callbackURL: 'https://foo.bar/instagram/callback'
+      })
+    })
+
+    it('toUser', done => {
+      const instagramInfo = {
+        provider: 'instagram',
+        displayName: 'Foo Bar',
+        username: 'pop',
+        _json: { data: { profile_picture: 'asd' } }
+      }
+      instagram.toUser(123, 345, instagramInfo, (error, user) => {
+        assert(!error)
+        assert.equal(user.token, 123)
+        assert.equal(user.tokenSecret, 345)
+        assert.deepEqual(user.profile, {
+          username: 'pop',
+          name: 'Foo Bar',
+          photo: 'asd',
+          provider: 'instagram'
+        })
+        done()
+      })
+    })
+  })
+
+  describe('mixer', () => {
+    let strategies
+    const env = {}
+    env.LW_MIXER_CLIENTID = 123
+    env.LW_MIXER_CLIENTSECRET = 432
+    before(() => {
       strategies = load(env, rootUrl)
     })
 
@@ -401,6 +548,24 @@ describe('the strategies module', () => {
         scope: ['channel:details:self'],
         callbackURL: 'https://foo.bar/mixer/callback'
       })
+    })
+    describe('reads scopes from env', () => {
+      const scopeEnv = Object.assign(
+        {},
+        env,
+        {
+          LW_MIXER_SCOPE: 'channel:details:self interactive:manage:self'
+        }
+      )
+      const scopeStrategy = load(scopeEnv, rootUrl)
+      assert.deepEqual(
+        scopeStrategy[0].config,
+        {
+          clientID: 123,
+          clientSecret: 432,
+          scope: ['channel:details:self', 'interactive:manage:self'],
+          callbackURL: 'https://foo.bar/mixer/callback'
+        })
     })
 
     it('toUser', done => {
@@ -418,6 +583,111 @@ describe('the strategies module', () => {
           username: 'pop',
           photo: 'asd',
           provider: 'mixer'
+        })
+        done()
+      })
+    })
+  })
+
+  describe('spotify', () => {
+    const PROVIDER = 'spotify'
+    let strategies
+    before(() => {
+      const env = {}
+      env.LW_SPOTIFY_CLIENTID = 123
+      env.LW_SPOTIFY_CLIENTSECRET = 432
+      strategies = load(env, rootUrl)
+    })
+
+    it('gets loaded', () => {
+      assert.equal(strategies.length, 1)
+      assert.equal(strategies[0].type, PROVIDER)
+    })
+
+    it('config is correct', () => {
+      assert.deepEqual(strategies[0].config, {
+        clientID: 123,
+        clientSecret: 432,
+        callbackURL: `https://foo.bar/${PROVIDER}/callback`
+      })
+    })
+
+    it('toUser', done => {
+      const spotifyInfo = {
+        provider: PROVIDER,
+        displayName: 'Foo Bar',
+        photos: [{ value: 'asd' }]
+      }
+      spotify.toUser(123, 345, spotifyInfo, (error, user) => {
+        assert(!error)
+        assert.equal(user.accessToken, 123)
+        assert.equal(user.refreshToken, 345)
+        assert.deepEqual(user.profile, {
+          username: 'Foo Bar',
+          photo: 'asd',
+          provider: PROVIDER
+        })
+        done()
+      })
+    })
+
+    it('toUserNoPic', done => {
+      const spotifyInfo = {
+        provider: PROVIDER,
+        displayName: 'Foo Bar'
+      }
+      spotify.toUser(123, 345, spotifyInfo, (error, user) => {
+        assert(!error)
+        assert.equal(user.accessToken, 123)
+        assert.equal(user.refreshToken, 345)
+        assert.deepEqual(user.profile, {
+          username: 'Foo Bar',
+          photo: null,
+          provider: PROVIDER
+        })
+        done()
+      })
+    })
+  })
+
+  describe('strava', () => {
+    let strategies
+    before(() => {
+      const env = {}
+      env.LW_STRAVA_CLIENTID = 123
+      env.LW_STRAVA_CLIENTSECRET = 432
+      strategies = load(env, rootUrl)
+    })
+
+    it('gets loaded', () => {
+      assert.equal(strategies.length, 1)
+      assert.equal(strategies[0].type, 'strava')
+    })
+
+    it('config is correct', () => {
+      assert.deepEqual(strategies[0].config, {
+        clientID: 123,
+        clientSecret: 432,
+        callbackURL: 'https://foo.bar/strava/callback'
+      })
+    })
+
+    it('toUser', done => {
+      const stravaInfo = {
+        provider: 'strava',
+        displayName: 'Foo Bar',
+        username: 'pop',
+        avatar: 'asd'
+      }
+      strava.toUser(123, 345, stravaInfo, (error, user) => {
+        assert(!error)
+        assert.equal(user.token, 123)
+        assert.equal(user.tokenSecret, 345)
+        assert.deepEqual(user.profile, {
+          username: 'pop',
+          name: 'Foo Bar',
+          photo: 'asd',
+          provider: 'strava'
         })
         done()
       })
